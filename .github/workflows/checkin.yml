@@ -1,0 +1,41 @@
+name: SB.SB Daily Check-in
+
+on:
+  schedule:
+    # GitHub Actions cron uses UTC.
+    # 00:17 UTC = 08:17 Beijing time (UTC+8).
+    # sb.sb daily sign-in resets at 00:00 UTC / 08:00 Beijing time.
+    - cron: '17 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sb-sb-daily-checkin
+  cancel-in-progress: false
+
+jobs:
+  checkin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run sb.sb check-in
+        env:
+          SB_COOKIE: ${{ secrets.SB_COOKIE }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+        run: python main.py
