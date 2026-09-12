@@ -3,9 +3,11 @@ name: SB.SB Daily Check-in
 on:
   schedule:
     # GitHub Actions cron uses UTC.
-    # 00:17 UTC = 08:17 Beijing time (UTC+8).
+    # Primary: 00:17 UTC = 08:17 Beijing time (UTC+8).
+    # Backup: 00:37 UTC = 08:37 Beijing time (UTC+8).
     # sb.sb daily sign-in resets at 00:00 UTC / 08:00 Beijing time.
     - cron: '17 0 * * *'
+    - cron: '37 0 * * *'
   workflow_dispatch:
 
 permissions:
